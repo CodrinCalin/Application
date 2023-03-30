@@ -24,7 +24,7 @@ namespace SomerenUI
             return await Task.Factory.StartNew(() =>
             {
                 return targetFunction();
-            }); 
+            });
         }
 
         private void ShowDashboardPanel()
@@ -61,7 +61,7 @@ namespace SomerenUI
                 ResetPanel();
                 List<Room> rooms = await ProcessList(GetRooms);
                 ResetPanel(title: "Rooms");
-               
+
 
                 DisplayRooms(rooms);
             }
@@ -72,11 +72,54 @@ namespace SomerenUI
 
         }
 
+        private async void ShowDrinksPanel()
+        {
+            try
+            {
+                DrinksPanel.Show();
+                List<Drink> drinks = await ProcessList(GetDrinks);
+                //ResetPanel(title: "Rooms");
+
+
+                DisplayDrinks(drinks);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Something went wrong while loading the drinks: " + e.Message);
+            }
+        }
+
+        private void DisplayDrinks(List<Drink> drinks)
+        {
+            // clear the listview before filling it
+            ListViewMain.Clear();
+
+            ListViewMain.Columns.Add("Name"); // edit with name of table from Sql database
+            ListViewMain.Columns.Add("Amount");
+            ListViewMain.Columns.Add("Price");
+            ListViewMain.Columns.Add("IsAcoholic");
+
+            foreach (Drink drink in drinks)
+            {
+                ListViewItem li = new ListViewItem(drink.Name.ToString());
+
+                li.SubItems.Add(drink.Amount.ToString());
+                li.SubItems.Add(drink.Price.ToString());
+                li.SubItems.Add(drink.IsAlcoholic.ToString());
+
+                li.Tag = drink;   // link room object to listview item.
+                ListViewMain.Items.Add(li);
+            }
+            ListViewMain.Columns[0].Width = 150;
+            ListViewMain.Columns[1].Width = 150;
+            ListViewMain.View = View.Details;
+        }
+
         private void DisplayRooms(List<Room> rooms)
         {
             // clear the listview before filling it
             ListViewMain.Clear();
-            
+
             ListViewMain.Columns.Add("Number");
             ListViewMain.Columns.Add("Type");
             ListViewMain.Columns.Add("Capacity");
@@ -85,7 +128,7 @@ namespace SomerenUI
             foreach (Room room in rooms)
             {
                 ListViewItem li = new ListViewItem(room.Id.ToString());
-                
+
                 li.SubItems.Add(room.Type.ToString());
                 li.SubItems.Add(room.Capacity.ToString());
                 li.SubItems.Add(room.Number.ToString());
@@ -98,7 +141,9 @@ namespace SomerenUI
             ListViewMain.View = View.Details;
         }
 
-        private void ResetPanel(string title = "") {
+        private void ResetPanel(string title = "")
+        {
+            DrinksPanel.Hide();
             PanelMain.Visible = true;
             PanelTitle.Text = title;
             ListViewMain.Clear();
@@ -135,6 +180,17 @@ namespace SomerenUI
             RoomService roomService = new RoomService();
             List<Room> rooms = roomService.GetRooms();
             return rooms;
+        }
+
+        private List<Drink> GetDrinks()
+        {
+            /*RoomService roomService = new RoomService();
+            List<Room> rooms = roomService.GetRooms();*/
+            //return rooms;
+
+            DrinkService drinkService = new DrinkService();
+            List<Drink> drinks = drinkService.GetDrinks();
+            return drinks;
         }
 
         private List<Human> GetStudents()
@@ -191,7 +247,7 @@ namespace SomerenUI
         {
             ShowStudentsPanel();
         }
-        
+
         private void lecturersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowLecturersPanel();
@@ -205,6 +261,11 @@ namespace SomerenUI
         private void roomsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowRoomsPanel();
+        }
+
+        private void drinksToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ShowDrinksPanel();
         }
     }
 }
