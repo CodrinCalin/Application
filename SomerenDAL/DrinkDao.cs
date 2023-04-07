@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace SomerenDAL
 {
@@ -41,7 +42,7 @@ namespace SomerenDAL
         public void UpdateDrink(Drink drink)
         {
             conn.Open();
-            SqlCommand sqlCommand = new SqlCommand();// add sqll commands for updating drinks 
+            SqlCommand sqlCommand = new SqlCommand("UPDATE Drinks SET Price = @Price, Amount = @Amount, IsAlcoholic = @IsAlcoholic WHERE Name = @Name");
 
             sqlCommand.Parameters.AddWithValue("@Price", drink.Price);
             sqlCommand.Parameters.AddWithValue("@Amount", drink.Amount);
@@ -60,7 +61,7 @@ namespace SomerenDAL
         public void AddDrinks(Drink drink)
         {
             conn.Open();
-            SqlCommand sqlCommand = new SqlCommand("");//add sql command to add drinks 
+            SqlCommand sqlCommand = new SqlCommand("INSERT INTO Drink(Name, Price, Amount, IsAlcoholic) VALUES(@Name, @Price, @Amount, @IsAlcoholic)");
 
             sqlCommand.Parameters.AddWithValue("@Price", drink.Price);
             sqlCommand.Parameters.AddWithValue("@Amount", drink.Amount);
@@ -80,7 +81,7 @@ namespace SomerenDAL
         {
             conn.Open();
 
-            SqlCommand sqlCommand = new SqlCommand(); // addSqlCommand for deleting drinks DELETE FROM Drinks WHERE Name = @Name
+            SqlCommand sqlCommand = new SqlCommand("DELETE FROM Drinks WHERE Name = @Name"); // addSqlCommand for deleting drinks DELETE FROM Drinks WHERE Name = @Name
 
             sqlCommand.Parameters.AddWithValue("@name", drink.Name);
 

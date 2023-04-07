@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using Microsoft.VisualBasic.Logging;
 using System.Diagnostics;
 
+
 namespace SomerenUI
 {
     public partial class SomerenUI : Form
@@ -18,6 +19,7 @@ namespace SomerenUI
             InitializeComponent();
         }
 
+        public ActivityService ActivityService = new ActivityService();
         public async Task<dynamic> ProcessList(Func<dynamic> targetFunction)
         {
             PanelTitle.Text = "Loading...";
@@ -266,6 +268,48 @@ namespace SomerenUI
         private void drinksToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShowDrinksPanel();
+        }
+
+        private void buttonAddActivity_Click(object sender, EventArgs e)
+        {
+
+        }
+      
+        private void activitiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            activitiesPanel.Show();
+           
+            refreshListView(ActivityService.GetActivities());
+            
+        }
+
+        private void DisplayActivities(List<SomerenModel.Activity> activities)
+        {
+            ListViewMain.Clear();
+
+            ListViewMain.Columns.Add("Name"); 
+            ListViewMain.Columns.Add("StartTime");
+            ListViewMain.Columns.Add("EndTime");
+
+            foreach (SomerenModel.Activity activity in activities)
+            {
+                ListViewItem li = new ListViewItem(activity.Name.ToString());
+
+                li.SubItems.Add(activity.StartTime.ToString());
+                li.SubItems.Add(activity.EndTime.ToString());
+
+                li.Tag = activity;   
+                ListViewMain.Items.Add(li);
+            }
+            ListViewMain.Columns[0].Width = 150;
+            ListViewMain.Columns[1].Width = 150;
+            ListViewMain.View = View.Details;
+        }
+
+
+        private void refreshListView(List<SomerenModel.Activity> activities)
+        {
+
         }
     }
 }
